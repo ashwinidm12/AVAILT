@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign Up - AVAILT</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        
+        .auth-container { width: 100%; max-width: 420px; }
+        
+        .auth-card { background: white; border-radius: 12px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); padding: 40px; }
+        
+        .auth-header { text-align: center; margin-bottom: 30px; }
+        .auth-header h1 { font-size: 28px; color: #1f2937; margin-bottom: 8px; }
+        .auth-header p { color: #6b7280; font-size: 14px; }
+        
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 14px; font-weight: 500; color: #374151; margin-bottom: 6px; }
+        .form-group input { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; transition: all 0.3s; }
+        .form-group input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1); }
+        
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3); }
+        
+        .divider { display: flex; align-items: center; margin: 24px 0; }
+        .divider span { flex: 1; height: 1px; background: #e5e7eb; }
+        .divider p { padding: 0 12px; color: #9ca3af; font-size: 13px; }
+        
+        .social-login { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .social-btn { padding: 10px; border: 1px solid #d1d5db; border-radius: 6px; background: white; cursor: pointer; font-size: 13px; font-weight: 500; color: #374151; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .social-btn:hover { background: #f9fafb; border-color: #9ca3af; }
+        .social-btn.full { grid-column: 1 / -1; }
+        
+        .auth-link { text-align: center; margin-top: 20px; color: #6b7280; font-size: 14px; }
+        .auth-link a { color: #667eea; text-decoration: none; font-weight: 600; }
+        .auth-link a:hover { text-decoration: underline; }
+        
+        .error-message { color: #dc2626; background: #fee2e2; padding: 12px; border-radius: 6px; margin-bottom: 16px; font-size: 14px; }
+        .success-message { color: #059669; background: #d1fae5; padding: 12px; border-radius: 6px; margin-bottom: 16px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Get Started</h1>
+                <p>Create your AVAILT account</p>
+            </div>
+
+            <div id="message-container"></div>
+
+            <!-- Email/Password Form -->
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" name="name" required placeholder="John Doe" />
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required placeholder="you@example.com" />
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="+91 XXXXX XXXXX" />
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="••••••••" />
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required placeholder="••••••••" />
+                </div>
+                <button type="submit" class="btn btn-primary">Create Account</button>
+            </form>
+
+            <div class="divider">
+                <span></span>
+                <p>or sign up with</p>
+                <span></span>
+            </div>
+
+            <!-- Social Signup Buttons -->
+            <div class="social-login">
+                <button type="button" class="social-btn" onclick="oauthLogin('google')">
+                    <span>🔵 Google</span>
+                </button>
+                <button type="button" class="social-btn" onclick="oauthLogin('facebook')">
+                    <span>👥 Facebook</span>
+                </button>
+                <button type="button" class="social-btn" onclick="oauthLogin('github')">
+                    <span>🐙 GitHub</span>
+                </button>
+                <button type="button" class="social-btn full" onclick="oauthLogin('apple')">
+                    <span>🍎 Sign up with Apple</span>
+                </button>
+            </div>
+
+            <div class="auth-link">
+                Already have an account? <a href="login.html">Sign in here</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const baseURL = window.location.hostname === 'localhost' ? 'http://localhost:8080' : '';
+
+        // Email/Password Signup
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            if (password !== confirmPassword) {
+                showMessage('Passwords do not match', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${baseURL}/api/auth/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, phone, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('authToken', data.token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    showMessage('Account created successfully!', 'success');
+                    setTimeout(() => window.location.href = 'index.html', 1000);
+                } else {
+                    showMessage(data.error || 'Signup failed', 'error');
+                }
+            } catch (error) {
+                showMessage('Error: ' + error.message, 'error');
+            }
+        });
+
+        // OAuth2 Signup
+        function oauthLogin(provider) {
+            window.location.href = `/oauth2/authorization/${provider}`;
+        }
+
+        function showMessage(message, type) {
+            const container = document.getElementById('message-container');
+            container.innerHTML = `<div class="${type}-message">${message}</div>`;
+            setTimeout(() => container.innerHTML = '', 5000);
+        }
+    </script>
+</body>
+</html>
