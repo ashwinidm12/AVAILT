@@ -2,6 +2,12 @@
 
 A full-stack web application for booking services (catering, venues, events, and more).
 
+## 🚀 Live Demo
+
+**Frontend (GitHub Pages):** https://ashwinidm12.github.io/AVAILT/
+
+> **Note:** The live demo is frontend-only. For full functionality with backend API, you need to run the Spring Boot server locally (see [Run the application](#run-the-application) below).
+
 ## Tech stack
 
 - **Frontend:** HTML, CSS, JavaScript (served by Spring Boot from `src/main/resources/static/`)
