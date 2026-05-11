@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Review booking — AVAILT</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Outfit:wght@600;800&display=swap"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body class="page-wrap">
+<header th:replace="fragments/nav :: header"></header>
+<main class="section container narrow">
+    <h1>Review your booking</h1>
+    <p th:if="${error}" class="flash error" th:text="${error}"></p>
+    <div class="panel" th:if="${draft != null}">
+        <h2 th:text="${draft.serviceName}">Service</h2>
+        <p class="muted" th:text="${draft.category}">Category</p>
+        <h3 class="summary-sub">Your details</h3>
+        <ul class="summary-list">
+            <li th:each="e : ${draft.bookingData}">
+                <span th:text="${e.key}">key</span>
+                <span th:text="${e.value}">val</span>
+            </li>
+        </ul>
+        <div th:if="${draft.selectedMenuName != null}" class="menu-recap" style="margin-top:1rem">
+            <h3 class="summary-sub">Menu</h3>
+            <p th:text="${draft.selectedMenuName}">Menu</p>
+            <p class="small muted" th:text="${draft.selectedMenuItems}">Items</p>
+            <p th:text="|₹${draft.selectedMenuPricePerPerson} per person|">pp</p>
+        </div>
+        <div class="summary-total">
+            <span>Total</span>
+            <span th:text="|₹${draft.totalPrice}|">₹</span>
+        </div>
+        <form th:action="@{/summary/confirm}" method="post" style="margin-top:1.5rem">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Confirm booking</button>
+        </form>
+        <p style="margin-top:1rem"><a class="btn btn-ghost" th:href="@{/book/{id}(id=${draft.serviceId})}">Edit details</a></p>
+    </div>
+</main>
+<footer class="footer-mini">AVAILT — local service booking</footer>
+</body>
+</html>

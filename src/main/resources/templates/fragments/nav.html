@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<header th:fragment="header" class="site-header">
+    <div class="header-inner">
+        <a class="logo" th:href="@{/}">AVAIL<span>T</span></a>
+        <form class="header-search" th:action="@{/services}" method="get">
+            <input type="search" name="q" placeholder="Search services…" th:value="${q != null ? q : ''}"/>
+            <button type="submit" class="btn btn-primary btn-sm">Search</button>
+        </form>
+        <button type="button" class="nav-toggle" aria-label="Menu" onclick="document.querySelector('.nav-links').classList.toggle('is-open')">
+            <span></span><span></span><span></span>
+        </button>
+        <nav class="nav-links">
+            <a th:href="@{/}">Home</a>
+            <a th:href="@{/categories}">Categories</a>
+            <a th:href="@{/services}">Services</a>
+            <a th:href="@{/join-provider}">Join as provider</a>
+            <span sec:authorize="isAuthenticated()" class="nav-user" sec:authentication="name"></span>
+            <a sec:authorize="!isAuthenticated()" th:href="@{/login}">Log in</a>
+            <a sec:authorize="!isAuthenticated()" th:href="@{/signup}">Sign up</a>
+            <a sec:authorize="isAuthenticated()" th:href="@{/logout}">Log out</a>
+        </nav>
+    </div>
+</header>
+</body>
+</html>

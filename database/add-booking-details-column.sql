@@ -1,2 +1,3 @@
--- Existing MySQL DBs: add JSON payload column for category-specific fields (safe to run once).
-ALTER TABLE bookings ADD COLUMN booking_details TEXT;
+-- Legacy migration: older schema used booking_details and flat columns.
+-- Current app uses booking_data (JSON), selected_menu (JSON), category, created_at — see schema.sql.
+-- If upgrading an old DB, prefer backing up data then applying schema.sql / Hibernate ddl-auto=update on a fresh schema.

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Join as provider — AVAILT</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Outfit:wght@600;800&display=swap"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body class="page-wrap">
+<header th:replace="fragments/nav :: header"></header>
+<main class="section container join-provider-page">
+    <div class="section-head">
+        <h1>List your business</h1>
+        <p>Submit your details — you appear in the same category list alongside existing providers (seed listings are never removed).</p>
+    </div>
+    <p th:if="${error}" class="flash error" th:text="${error}"></p>
+    <div class="panel join-form-panel">
+        <form th:action="@{/join-provider}" method="post" class="stack join-form-grid">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <div class="form-section-title">Business</div>
+            <div class="form-group">
+                <label for="businessName">Business name</label>
+                <input id="businessName" name="businessName" type="text" required/>
+            </div>
+            <div class="form-group">
+                <label for="ownerName">Owner name</label>
+                <input id="ownerName" name="ownerName" type="text" required/>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone</label>
+                <input id="phone" name="phone" type="tel" required/>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" required/>
+            </div>
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" name="category" required>
+                    <option value="">Select category</option>
+                    <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}">Cat</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="serviceType">Service type</label>
+                <input id="serviceType" name="serviceType" type="text" placeholder="e.g. Home delivery, Wedding hall" required/>
+            </div>
+            <div class="form-group full-width">
+                <label for="address">Address</label>
+                <input id="address" name="address" type="text" required/>
+            </div>
+            <div class="form-group">
+                <label for="city">City</label>
+                <input id="city" name="city" type="text" required/>
+            </div>
+            <div class="form-group full-width">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" rows="4" required></textarea>
+            </div>
+            <div class="form-section-title">Pricing &amp; hours</div>
+            <div class="form-group">
+                <label for="priceRangeMin">Starting price (INR)</label>
+                <input id="priceRangeMin" name="priceRangeMin" type="text" placeholder="e.g. 1500" required/>
+            </div>
+            <div class="form-group">
+                <label for="priceRangeMax">Max price (INR, optional)</label>
+                <input id="priceRangeMax" name="priceRangeMax" type="text" placeholder="e.g. 8000"/>
+            </div>
+            <div class="form-group full-width">
+                <label for="openingHours">Opening hours</label>
+                <input id="openingHours" name="openingHours" type="text" placeholder="e.g. Mon–Sat 9–7" required/>
+            </div>
+            <div class="form-section-title">Images</div>
+            <div class="form-group full-width">
+                <label for="shopImageUrl">Main shop / hero image URL</label>
+                <input id="shopImageUrl" name="shopImageUrl" type="url" placeholder="https://…"/>
+            </div>
+            <div class="form-group full-width">
+                <label for="serviceImageUrls">Extra service image URLs (one per line)</label>
+                <textarea id="serviceImageUrls" name="serviceImageUrls" rows="3" placeholder="https://…"></textarea>
+            </div>
+            <div class="form-section-title">Catering only (optional)</div>
+            <div class="form-group full-width">
+                <label for="cateringMenuItems">Menu highlights / packages text</label>
+                <textarea id="cateringMenuItems" name="cateringMenuItems" rows="3" placeholder="If you list under Catering, describe menus here"></textarea>
+            </div>
+            <div class="form-group full-width">
+                <label for="cateringPackageImageUrls">Catering package image URLs (one per line)</label>
+                <textarea id="cateringPackageImageUrls" name="cateringPackageImageUrls" rows="2"></textarea>
+            </div>
+            <div class="form-actions full-width">
+                <button type="submit" class="btn btn-primary btn-lg">Submit listing</button>
+                <a class="btn btn-ghost" th:href="@{/services}">Cancel</a>
+            </div>
+        </form>
+    </div>
+</main>
+<footer class="footer-mini">AVAILT — local service booking</footer>
+</body>
+</html>

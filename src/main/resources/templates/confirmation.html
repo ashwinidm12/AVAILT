@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Booking confirmed — AVAILT</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Outfit:wght@600;800&display=swap"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body class="page-wrap">
+<header th:replace="fragments/nav :: header"></header>
+<main class="section container narrow center-text">
+    <div class="success-icon">✓</div>
+    <h1>Booking confirmed</h1>
+    <p class="muted">Thank you — we have saved your request.</p>
+    <div class="panel left-text" style="margin-top:1.5rem;text-align:left">
+        <ul class="summary-list">
+            <li><span>Reference</span><span th:text="${booking.id}">#</span></li>
+            <li><span>Service</span><span th:text="${serviceName}">—</span></li>
+            <li><span>Status</span><span th:text="${booking.status}">CONFIRMED</span></li>
+            <li><span>Total</span><span th:text="|₹${booking.totalPrice}|">₹</span></li>
+        </ul>
+        <h3 class="summary-sub">Details</h3>
+        <ul class="summary-list">
+            <li th:each="e : ${bookingDataMap}">
+                <span th:text="${e.key}">k</span>
+                <span th:text="${e.value}">v</span>
+            </li>
+        </ul>
+        <div th:if="${selectedMenuMap != null and !#maps.isEmpty(selectedMenuMap)}" class="menu-recap" style="margin-top:1rem">
+            <h3 class="summary-sub">Menu</h3>
+            <ul class="summary-list">
+                <li th:each="e : ${selectedMenuMap}">
+                    <span th:text="${e.key}">k</span>
+                    <span th:text="${e.value}">v</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <p style="margin-top:2rem">
+        <a class="btn btn-primary" th:href="@{/services}">Browse more services</a>
+    </p>
+</main>
+<footer class="footer-mini">AVAILT — local service booking</footer>
+</body>
+</html>

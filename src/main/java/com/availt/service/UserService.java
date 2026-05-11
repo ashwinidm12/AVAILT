@@ -16,12 +16,27 @@ public class UserService {
     private PasswordEncoder passwordEncoder;
 
     public User register(User user) {
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            throw new IllegalArgumentException("Email is required");
+        }
+        String email = user.getEmail().trim().toLowerCase();
+        if (userRepository.existsByEmail(email)) {
+            throw new IllegalArgumentException("Email already registered");
+        }
+        if (user.getPhone() != null && !user.getPhone().trim().isEmpty()
+                && userRepository.existsByPhone(user.getPhone().trim())) {
+            throw new IllegalArgumentException("Phone already registered");
+        }
+        user.setEmail(email);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
-    public User login(String phone, String password) {
-        User user = userRepository.findByPhone(phone);
+    public User login(String email, String password) {
+        if (email == null || password == null) {
+            return null;
+        }
+        User user = userRepository.findByEmail(email.trim().toLowerCase());
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
             return user;
         }
@@ -29,7 +44,10 @@ public class UserService {
     }
 
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        if (email == null) {
+            return null;
+        }
+        return userRepository.findByEmail(email.trim().toLowerCase());
     }
 
     public User saveUser(User user) {

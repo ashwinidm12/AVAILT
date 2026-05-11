@@ -1,7 +1,7 @@
 package com.availt.model;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.Instant;
 
 @Entity
 @Table(name = "bookings")
@@ -11,55 +11,101 @@ public class Booking {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "user_id", nullable = false)
     private Long userId;
+
+    @Column(name = "service_id", nullable = false)
     private Long serviceId;
-    private String name;
-    private String phone;
-    private Integer peopleCount;
-    private String eventName;
-    private LocalDate date;
-    private String venue;
+
+    @Column(nullable = false, length = 128)
+    private String category;
+
+    /** JSON: dynamic form fields */
+    @Column(name = "booking_data", columnDefinition = "TEXT", nullable = false)
+    private String bookingData;
+
+    /** JSON: selected catering menu, nullable */
+    @Column(name = "selected_menu", columnDefinition = "TEXT")
+    private String selectedMenu;
+
+    @Column(name = "total_price", nullable = false)
     private Double totalPrice;
-    private String status;
 
-    /** JSON blob: category, formData, selectedPackage (dynamic fields) */
-    @Column(columnDefinition = "TEXT")
-    private String bookingDetails;
+    @Column(nullable = false, length = 32)
+    private String status = "CONFIRMED";
 
-    // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    @Column(name = "created_at", nullable = false)
+    private Instant createdAt = Instant.now();
 
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
+    public Long getId() {
+        return id;
+    }
 
-    public Long getServiceId() { return serviceId; }
-    public void setServiceId(Long serviceId) { this.serviceId = serviceId; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public Long getUserId() {
+        return userId;
+    }
 
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
-    public Integer getPeopleCount() { return peopleCount; }
-    public void setPeopleCount(Integer peopleCount) { this.peopleCount = peopleCount; }
+    public Long getServiceId() {
+        return serviceId;
+    }
 
-    public String getEventName() { return eventName; }
-    public void setEventName(String eventName) { this.eventName = eventName; }
+    public void setServiceId(Long serviceId) {
+        this.serviceId = serviceId;
+    }
 
-    public LocalDate getDate() { return date; }
-    public void setDate(LocalDate date) { this.date = date; }
+    public String getCategory() {
+        return category;
+    }
 
-    public String getVenue() { return venue; }
-    public void setVenue(String venue) { this.venue = venue; }
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-    public Double getTotalPrice() { return totalPrice; }
-    public void setTotalPrice(Double totalPrice) { this.totalPrice = totalPrice; }
+    public String getBookingData() {
+        return bookingData;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public void setBookingData(String bookingData) {
+        this.bookingData = bookingData;
+    }
 
-    public String getBookingDetails() { return bookingDetails; }
-    public void setBookingDetails(String bookingDetails) { this.bookingDetails = bookingDetails; }
+    public String getSelectedMenu() {
+        return selectedMenu;
+    }
+
+    public void setSelectedMenu(String selectedMenu) {
+        this.selectedMenu = selectedMenu;
+    }
+
+    public Double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(Double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
 }

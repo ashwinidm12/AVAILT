@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>AVAILT — Book trusted local services</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Outfit:wght@600;800&display=swap"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body class="page-wrap">
+<header th:replace="fragments/nav :: header"></header>
+<section class="hero">
+    <div class="hero-inner">
+        <h1>Services you need, booked in minutes</h1>
+        <p>Browse categories, compare providers, and confirm catering, home care, photography, and more — all in one place.</p>
+        <form class="hero-search" th:action="@{/services}" method="get">
+            <input type="search" name="q" placeholder="What are you looking for?"/>
+            <button type="submit" class="btn btn-primary btn-lg">Search</button>
+        </form>
+    </div>
+</section>
+<section class="section container">
+    <div class="section-head">
+        <h2>Featured services</h2>
+        <p>Highly rated providers near you</p>
+    </div>
+    <div class="grid-services" th:if="${!#lists.isEmpty(featured)}">
+        <article class="card-service" th:each="s : ${featured}">
+            <a th:href="@{/service/{id}(id=${s.id})}" class="thumb-wrap">
+                <img class="img-cover" th:src="${@imagePlaceholderHelper.resolve(s.imageUrl, s.category)}"
+                     th:attr="data-ph=${@imagePlaceholderHelper.fallbackForCategory(s.category)}"
+                     th:alt="${s.name}" loading="lazy"
+                     onerror="this.onerror=null;this.src=this.dataset.ph"/>
+            </a>
+            <div class="body">
+                <h3><a th:href="@{/service/{id}(id=${s.id})}" th:text="${s.name}">Name</a></h3>
+                <p class="meta" th:text="${s.category} + ' · ' + ${s.type}">Category</p>
+                <p class="rating" th:text="'★ ' + ${s.rating}">★</p>
+                <p class="price" th:text="|From ₹${s.price}|">Price</p>
+            </div>
+        </article>
+    </div>
+    <p th:if="${#lists.isEmpty(featured)}" class="muted">No services yet.</p>
+    <p style="margin-top:2rem"><a class="btn btn-ghost" th:href="@{/categories}">Browse all categories</a></p>
+</section>
+<footer class="footer-mini">AVAILT — local service booking</footer>
+</body>
+</html>

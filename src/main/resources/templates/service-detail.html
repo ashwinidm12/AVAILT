@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${service.name} + ' — AVAILT'">Service</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Outfit:wght@600;800&display=swap"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body class="page-wrap">
+<header th:replace="fragments/nav :: header"></header>
+<main class="section container">
+    <p class="breadcrumb"><a th:href="@{/services}">Services</a> / <span th:text="${service.name}">Name</span></p>
+    <div class="detail-grid">
+        <div>
+            <img class="detail-hero-img img-cover" th:src="${heroImage}"
+                 th:attr="data-ph=${@imagePlaceholderHelper.fallbackForCategory(service.category)}"
+                 th:alt="${service.name}"
+                 onerror="this.onerror=null;this.src=this.dataset.ph"/>
+            <div class="gallery-strip" th:if="${galleryImages != null and !#lists.isEmpty(galleryImages)}">
+                <img th:each="g : ${galleryImages}" th:src="${g}" alt="" class="gallery-thumb img-cover"
+                     th:attr="data-ph=${@imagePlaceholderHelper.fallbackForCategory(service.category)}"
+                     onerror="this.onerror=null;this.src=this.dataset.ph"/>
+            </div>
+        </div>
+        <div class="sticky-side panel">
+            <h1 th:text="${service.name}">Name</h1>
+            <p class="muted" th:text="${service.category} + ' · ' + ${service.type}">Meta</p>
+            <p class="badge-community" th:if="${service.communitySubmitted != null and service.communitySubmitted}">Community listing</p>
+            <p class="rating" th:text="'★ ' + ${service.rating}">★</p>
+            <p class="price big" th:if="${service.priceMax != null}">
+                <span th:text="|From ₹${service.price} – ₹${service.priceMax}|">Range</span>
+            </p>
+            <p class="price big" th:unless="${service.priceMax != null}" th:text="|From ₹${service.price}|">Price</p>
+            <p th:text="${service.description}">Description</p>
+            <p class="muted" th:text="${service.address}">Address</p>
+            <p class="muted" th:if="${service.city != null and !#strings.isEmpty(service.city)}" th:text="${service.city}">City</p>
+            <p class="muted" th:if="${service.ownerName != null and !#strings.isEmpty(service.ownerName)}"
+               th:text="|Owner: ${service.ownerName}|">Owner</p>
+            <p class="muted" th:text="'Contact: ' + ${service.contact}">Contact</p>
+            <p class="muted" th:if="${service.providerEmail != null and !#strings.isEmpty(service.providerEmail)}"
+               th:text="|Email: ${service.providerEmail}|">Email</p>
+            <p class="muted" th:if="${service.openingHours != null and !#strings.isEmpty(service.openingHours)}"
+               th:text="|Hours: ${service.openingHours}|">Hours</p>
+            <div class="cta-row" style="margin-top:1.25rem;display:flex;flex-wrap:wrap;gap:10px">
+                <a th:if="${isCatering}" class="btn btn-primary btn-lg" th:href="@{/menu/{id}(id=${service.id})}">Choose catering menu</a>
+                <a th:unless="${isCatering}" class="btn btn-primary btn-lg" th:href="@{/book/{id}(id=${service.id})}">Book now</a>
+                <a class="btn btn-ghost" th:href="@{/services(category=${service.category})}">More in category</a>
+                <a class="btn btn-ghost" th:href="@{/services}">All services</a>
+            </div>
+        </div>
+    </div>
+</main>
+<footer class="footer-mini">AVAILT — local service booking</footer>
+</body>
+</html>

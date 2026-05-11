@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Categories — AVAILT</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Outfit:wght@600;800&display=swap"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body class="page-wrap">
+<header th:replace="fragments/nav :: header"></header>
+<main class="section container">
+    <div class="section-head">
+        <h1>Browse categories</h1>
+        <p>Choose a category to see available services</p>
+    </div>
+    <div class="grid-categories">
+        <a class="card-category" th:each="c : ${categoryCards}" th:href="@{/services(category=${c.name})}">
+            <img class="thumb img-cover" th:src="${c.imageUrl}"
+                 th:attr="data-ph=${@imagePlaceholderHelper.fallbackForCategory(c.name)}"
+                 th:alt="${c.name}" loading="lazy"
+                 onerror="this.onerror=null;this.src=this.dataset.ph"/>
+            <div class="body">
+                <h3 th:text="${c.name}">Category</h3>
+            </div>
+        </a>
+    </div>
+</main>
+<footer class="footer-mini">AVAILT — local service booking</footer>
+</body>
+</html>

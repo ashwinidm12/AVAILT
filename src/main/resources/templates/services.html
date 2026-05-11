@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Services — AVAILT</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Outfit:wght@600;800&display=swap"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body class="page-wrap">
+<header th:replace="fragments/nav :: header"></header>
+<main class="section container">
+    <div class="section-head">
+        <h1>Services</h1>
+        <p>Filter by category or search</p>
+    </div>
+    <p th:if="${joinSuccess}" class="flash success">Thanks — <strong th:text="${joinSuccess}">Name</strong> is now listed. Scroll to find your listing.</p>
+    <form class="filters panel" th:action="@{/services}" method="get" style="margin-bottom:1.5rem;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end">
+        <div class="form-group" style="margin:0;min-width:160px">
+            <label for="category">Category</label>
+            <select id="category" name="category">
+                <option value="all" th:selected="${category == 'all'}">All</option>
+                <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}" th:selected="${cat == category}">Cat</option>
+            </select>
+        </div>
+        <div class="form-group" style="margin:0;flex:1;min-width:200px">
+            <label for="q">Search</label>
+            <input id="q" type="search" name="q" th:value="${q}"/>
+        </div>
+        <div class="form-group" style="margin:0;min-width:140px">
+            <label for="sort">Sort</label>
+            <select id="sort" name="sort">
+                <option value="" th:selected="${sort == null or sort == ''}">Default</option>
+                <option value="priceAsc" th:selected="${sort == 'priceAsc'}">Price ↑</option>
+                <option value="priceDesc" th:selected="${sort == 'priceDesc'}">Price ↓</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Apply</button>
+    </form>
+    <div class="grid-services" th:if="${!#lists.isEmpty(services)}">
+        <article class="card-service" th:each="s : ${services}">
+            <a th:href="@{/service/{id}(id=${s.id})}" class="thumb-wrap">
+                <img class="img-cover" th:src="${@imagePlaceholderHelper.resolve(s.imageUrl, s.category)}"
+                     th:attr="data-ph=${@imagePlaceholderHelper.fallbackForCategory(s.category)}"
+                     th:alt="${s.name}" loading="lazy"
+                     onerror="this.onerror=null;this.src=this.dataset.ph"/>
+            </a>
+            <div class="body">
+                <h3><a th:href="@{/service/{id}(id=${s.id})}" th:text="${s.name}">Name</a></h3>
+                <span class="badge-community" th:if="${s.communitySubmitted != null and s.communitySubmitted}">Community</span>
+                <p class="meta" th:text="${s.category}">Cat</p>
+                <p class="rating" th:text="'★ ' + ${s.rating}">★</p>
+                <p class="price" th:text="|From ₹${s.price}|">₹</p>
+            </div>
+        </article>
+    </div>
+    <p th:if="${#lists.isEmpty(services)}" class="muted">No services match your filters.</p>
+</main>
+<footer class="footer-mini">AVAILT — local service booking</footer>
+</body>
+</html>

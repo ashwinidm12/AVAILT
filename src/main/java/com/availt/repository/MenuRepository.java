@@ -2,8 +2,12 @@ package com.availt.repository;
 
 import com.availt.model.Menu;
 import org.springframework.data.jpa.repository.JpaRepository;
+
 import java.util.List;
+import java.util.Optional;
 
 public interface MenuRepository extends JpaRepository<Menu, Long> {
     List<Menu> findByServiceId(Long serviceId);
+
+    Optional<Menu> findByIdAndServiceId(Long id, Long serviceId);
 }

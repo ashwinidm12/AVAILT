@@ -1,58 +1,59 @@
+-- AVAILT MySQL schema aligned with JPA entities (Spring Boot + Hibernate).
+-- Create DB and run this file, or rely on spring.jpa.hibernate.ddl-auto=update with an empty database.
+-- Sample data: the app seeds services/menus on first run when tables are empty (DataInitializer).
+
 CREATE DATABASE IF NOT EXISTS availt;
 USE availt;
 
 CREATE TABLE IF NOT EXISTS users (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(255),
-  phone VARCHAR(255),
-  password VARCHAR(255)
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  phone VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  UNIQUE KEY uk_users_email (email)
 );
 
 CREATE TABLE IF NOT EXISTS services (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(255),
-  category VARCHAR(255),
+  name VARCHAR(255) NOT NULL,
+  category VARCHAR(255) NOT NULL,
   type VARCHAR(255),
   address VARCHAR(255),
   contact VARCHAR(255),
   rating DOUBLE,
   price DOUBLE,
-  image_url VARCHAR(1024)
+  image_url VARCHAR(1024),
+  description TEXT,
+  city VARCHAR(255),
+  owner_name VARCHAR(255),
+  provider_email VARCHAR(255),
+  opening_hours VARCHAR(512),
+  price_max DOUBLE,
+  gallery_image_urls TEXT,
+  community_submitted TINYINT(1) DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS menus (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  service_id BIGINT,
-  menu_name VARCHAR(255),
-  items VARCHAR(1024),
+  service_id BIGINT NOT NULL,
+  menu_name VARCHAR(255) NOT NULL,
+  items TEXT,
   price DOUBLE,
-  FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE
+  image_url VARCHAR(1024),
+  CONSTRAINT fk_menus_service FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS bookings (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
-  user_id BIGINT,
-  service_id BIGINT,
-  name VARCHAR(255),
-  phone VARCHAR(255),
-  people_count INT,
-  event_name VARCHAR(255),
-  date DATE,
-  venue VARCHAR(255),
-  total_price DOUBLE,
-  status VARCHAR(100),
-  booking_details TEXT,
-  FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE SET NULL,
-  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+  user_id BIGINT NOT NULL,
+  service_id BIGINT NOT NULL,
+  category VARCHAR(128) NOT NULL,
+  booking_data TEXT NOT NULL,
+  selected_menu TEXT,
+  total_price DOUBLE NOT NULL,
+  status VARCHAR(32) NOT NULL,
+  created_at TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  CONSTRAINT fk_bookings_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  CONSTRAINT fk_bookings_service FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE
 );
-
-INSERT INTO services (name, category, type, address, contact, rating, price, image_url) VALUES
-('Premium Catering Co.', 'Catering', 'Food & Beverage', 'Downtown Avenue 12, City Central', '+91 98765 43210', 4.9, 1200.0, 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=80'),
-('Grand Banquet Hall', 'Venue Booking', 'Banquet Hall', 'Sunrise Road 5, Business Park', '+91 91234 56789', 4.8, 9500.0, 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80'),
-('EventSpark Management', 'Event Management', 'Corporate & Social', 'Maple Street 88, Midtown', '+91 99876 54321', 4.7, 7000.0, 'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=900&q=80'),
-('FocusFrames Photography', 'Photographer', 'Event Photography', 'Cedar Lane 20, Art District', '+91 90123 45678', 4.6, 4500.0, 'https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=80'),
-('QuickCare Medical', 'Medical Services', 'Home Doctor Visit', 'Oak Avenue 32, Health Zone', '+91 93456 78901', 4.4, 1800.0, 'https://images.unsplash.com/photo-1580281657521-64cc9cb4d0c4?auto=format&fit=crop&w=900&q=80');
-
-INSERT INTO menus (service_id, menu_name, items, price) VALUES
-(1, 'Classic Buffet', 'Paneer tikka, Dal makhani, Naan, Rice, Salad', 1200.0),
-(1, 'Premium Feast', 'Grilled fish, Butter chicken, Exotic salads, Dessert platter', 2200.0);

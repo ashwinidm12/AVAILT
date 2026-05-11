@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>Catering menus — AVAILT</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700&family=Outfit:wght@600;800&display=swap"/>
+    <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body class="page-wrap">
+<header th:replace="fragments/nav :: header"></header>
+<main class="section container">
+    <p class="breadcrumb"><a th:href="@{/service/{id}(id=${service.id})}" th:text="${service.name}">Service</a> / Menus</p>
+    <h1>Choose a menu</h1>
+    <p class="muted">Select one menu per booking. Price is per person.</p>
+    <p th:if="${error}" class="flash error" th:text="${error}"></p>
+    <p th:if="${menuSelected}" class="flash success" th:text="|Selected: ${menuSelected}|"></p>
+    <div class="grid-menus">
+        <div class="menu-card" th:each="m : ${menus}" th:classappend="${selectedMenuId != null and selectedMenuId == m.id} ? ' selected' : ''">
+            <img class="img-cover" th:src="${@imagePlaceholderHelper.resolve(m.imageUrl, 'Catering')}"
+                 th:attr="data-ph=${@imagePlaceholderHelper.fallbackForCategory('Catering')}"
+                 th:alt="${m.menuName}" loading="lazy"
+                 onerror="this.onerror=null;this.src=this.dataset.ph"/>
+            <h3 th:text="${m.menuName}">Menu</h3>
+            <p class="items" th:text="${m.items}">Items</p>
+            <p class="price" th:text="|₹${m.price} / person|">Price</p>
+            <form th:action="@{/menu/{sid}/select(sid=${service.id})}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <input type="hidden" name="menuId" th:value="${m.id}"/>
+                <button type="submit" class="btn btn-primary btn-block">Select</button>
+            </form>
+        </div>
+    </div>
+</main>
+<footer class="footer-mini">AVAILT — local service booking</footer>
+</body>
+</html>
